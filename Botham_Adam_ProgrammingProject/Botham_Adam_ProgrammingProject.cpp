@@ -22,12 +22,17 @@ int main()
 	SetConsoleOutputCP(1252);
 	SetConsoleCP(1252);
 	cout << "The program starts:" << endl;
-	cout << "\n-------------------------\n" << endl
-		<< "Choose which Part/Function to execute:" << endl << endl
-		<< "Part 1: Personal ID" << endl
-		<< "Part 2: Annual Study Grant" << endl
-		<< "Part 3: Choose between 2 functions" << endl
-		<< "Enter your choice: ";
+	cout << "\n-------------------------\n" << endl;
+	do
+	{
+
+	
+	cout << "Choose which Part/Function to execute:" << endl << endl
+		 << "1: Personal ID" << endl
+		 << "2: Annual Study Grant" << endl
+		 << "3: Choose between 2 functions" << endl	
+		 << "9: Quit" << endl
+		 << "Enter your choice: ";
 	 cin >> choosePart;
 	switch (choosePart) {
 		case 1: {
@@ -45,11 +50,15 @@ int main()
 			Part3();
 			break;
 		}
+		case 9: {
+			cout << "\nBYE BYE :)" << endl;
+			break;
+		}
 		default: {
-			cout << "\nInvalid choice :(" << endl;
+			cout << "\nInvalid choice :( Try again." << endl;
 		}
 	}
-	
+	} while (choosePart !=9);
 	
 	cout << "\n-------------------------\n" << endl;
 	cout << "The program has ended and shutdown." << endl;
