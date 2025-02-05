@@ -6,8 +6,13 @@
 #include <Windows.h>
 #include <string>
 #include <iomanip> //for output formatting
+#include <stdlib.h>
+#include <time.h>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
+
 
 //In C/C++ -programs functions have to be declared before defining them
 void ShowMenu();
@@ -15,6 +20,7 @@ void PersonalID();
 void AnnualGrant();
 void ChooseFunction();
 void PrimeCheck();
+void Section6();
 
 
 
@@ -42,6 +48,7 @@ int main()
 		case '3': { ChooseFunction(); break; }
 		case '4': { ShowMenu(); break;}
 		case '5': { PrimeCheck(); break;}
+		case '6': { Section6(); break; }
 
 		case 'q': case 'Q': {
 			cout << "\nBYE BYE :)" << endl;
@@ -64,6 +71,7 @@ void ShowMenu() {
 		<< "3: Choose between 2 functions" << endl
 		<< "4: Help" << endl
 		<< "5: Prime Number Check" << endl
+		<< "6: Random Character Genertor and Timer" << endl
 
 		<< "Q: Quit" << endl;
 }
@@ -224,3 +232,32 @@ void PrimeCheck() {
 	cout << "\n*** PART 5 END***" << endl;
 }
 
+
+void Section6() {
+	//auto lets the compiler figure out the type of variable 
+	auto start = system_clock::now();//makes a time stamp (before the output) named start 
+	
+	duration<double> sec; //sets the duration count in double so it has decimal points
+
+	//Initialize rand
+	srand(time(NULL));
+
+	//random int value between 250,000 and 500,000
+	int numChars = rand() % 250001 + 250000;
+	
+
+	
+	//for loop to generate random letters the amount of the ranodmized int
+	for (int i = 0; i < numChars; ++i) {
+		char rndChar = rand() % 26 + 97; 
+		cout << rndChar;
+	}
+
+	auto end = system_clock::now();
+
+	//counting a duration between start and end in seconds (in full seconds?)
+	sec = duration_cast<seconds>(end - start);
+	//printing the stuff
+	cout << "\nRandomizing and printing " << numChars
+		<< " letters took: " << sec.count() << " seconds." << endl;
+}
