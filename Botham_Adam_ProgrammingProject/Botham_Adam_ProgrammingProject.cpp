@@ -15,6 +15,10 @@
 using namespace std;
 using namespace std::chrono;
 
+//making bool values for the checkers game to validate moves
+bool quit = false;
+bool retry = false;
+
 
 //In C/C++ -programs functions have to be declared before defining them
 void ShowMenu();
@@ -53,6 +57,7 @@ int main()
 		case '5': { PrimeCheck(); break; }
 		case '6': { RandCharGenWithChrono(); break; }
 		case '7': { SentenceRangeFor(); break; }
+				//section 8 instead of the movie theater i made the checkers game to be editable/"playable"
 		case '8': { CheckersGame(); break; }
 
 		case 'q': case 'Q': {
@@ -387,6 +392,7 @@ void InitializeBoard(vector<vector<char>> &board)
 //printing the board but not modifying it
 void PrintBoard(const vector<vector<char>> &board)
 {
+	cout << endl;
 	//from each row in the board
 	for (const auto& row : board)
 	{
@@ -398,11 +404,134 @@ void PrintBoard(const vector<vector<char>> &board)
 		cout << endl; //cout each row and then the next one to a new line
 	}
 }
+//correct lowercase inputs and convert input to int for vectors indices.
+//making bool so that we can validate input.
+bool ValidateInput(string &input, int &col, int &row)
+{
+	//if the input is not 2 then the input is invalid immediately without string to char conversion
+	if (input.length() != 2)
+		return false;
 
+	//string to char conversion and all caps force
+	char colChar = toupper(input[0]); //toupper forces ALLCAPS so that the check for column through char ascii value doesn't fail
+	char rowChar = input[1];
+
+	//validate the inputs through char values
+	if (colChar < 'A' || colChar > 'H' || rowChar < '1' || rowChar > '8')
+		return false;
+
+	//converting char to correct int so they correspond the vector/matrix values
+
+	col = colChar - 'A' + 1; //converting char 'A'-'H' into 1-8
+	row = rowChar - '1' + 1; //+1 to shift the start from 0 to 1 
+
+	return true;
+}
+//Validating movement and movement logic and allow quitting
+void movePiece(vector<vector<char>>& board, char player)
+{
+	
+
+	string from, to;
+	//ask for move input
+	cout << "\nTo Quit input QQ in both input fields" << endl
+		<< "\nPlayer: " << player
+		<< ", make your move (e.g. from \"B6\" to \"C5\"): " << endl 
+		<< "From: "; cin >> from; cout << "to: "; cin >> to;
+
+
+	//check if input is for quitting the game
+	if (from == "QQ" || from == "qq")
+	{
+		quit = true;
+		return;
+	}
+		
+
+
+	if (to == "QQ" || to == "qq")
+	{
+		quit = true;
+		return;
+	}
+		
+
+	//making integers for ValidateInput arguments
+	int fromCol, fromRow, toCol, toRow;
+
+	//Invalid input either from to are invalid
+	if (!ValidateInput(from, fromCol, fromRow)||!ValidateInput(to,toCol,toRow))
+	{
+		cout << "\nInvalid input :( Try again." << endl;
+		retry = true;
+		return;
+	}
+
+	//validate that it is the correct piece
+	if (board[fromRow][fromCol] != player)
+	{
+		cout << "\nThat is NOT your piece!!! Try again." << endl;
+		retry = true;
+		return;
+	}
+
+	//validate the space to be empty before moving
+	if (board[toRow][toCol] != ' ')
+	{
+		cout << "OCCUPIEEED!!! \n Try again." << endl;
+		retry = true;
+		return;
+	}
+	
+		
+	
+	//move the piece and empty the start position
+	board[toRow][toCol] = player;
+	board[fromRow][fromCol] = ' ';
+	
+		
+}
+//function that runs the game and well it doesn't follow any rules or have a win condition (yet) but the changing of the pieces works and is validated for incorrect inputs.
 void CheckersGame()
 {
+	cout << "\n*** PART 8***" << endl;
+
+	//reset global quit bool to false when starting a new game to not immediately quit a new game
+	quit = false;
+	//mkaing a bool for the do while loop
+	bool quitGame = false;
+
+
+	//initialize 2D vector and board
 	vector<vector<char>> board;
 	InitializeBoard(board);
-	PrintBoard(board);
+	
+	
+	//start with O's aka bottom player
+	char currentPlayer = 'O';
+		
+	
+	//do while loop to continue the game until it is exited manually
+	do 
+	{
+		
+		PrintBoard(board);
+		movePiece(board, currentPlayer);
 
+		//if manually quit
+		if (quit)
+		{
+			cout << "\nExiting game." << endl;
+			quitGame = true;
+			break;
+		}
+
+		if (!retry)
+		{
+			//change the player after each turn but even if invalid
+			currentPlayer = (currentPlayer == 'O') ? 'X' : 'O';
+		}
+	} while (!quitGame);		
+
+	cout << "\n*** PART 8 END***" << endl;
 }
