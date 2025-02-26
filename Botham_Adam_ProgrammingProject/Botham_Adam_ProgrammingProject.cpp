@@ -20,7 +20,8 @@ bool quit = false;
 bool retry = false;
 
 
-//In C/C++ -programs functions have to be declared before defining them
+//In C++ -programs functions have to be declared before it is used (called)
+//functions can be also defined here but not all functions are called so it is "cleaner" to declare (a prototype of ) the functions actually used
 void ShowMenu();
 void PersonalID();
 void AnnualGrant();
@@ -29,6 +30,7 @@ void PrimeCheck();
 void RandCharGenWithChrono();
 void SentenceRangeFor();
 void CheckersGame();
+void RandomNumbers();
 
 
 
@@ -59,6 +61,8 @@ int main()
 		case '7': { SentenceRangeFor(); break; }
 				//section 8 instead of the movie theater i made the checkers game to be editable/"playable"
 		case '8': { CheckersGame(); break; }
+		case '9': { RandomNumbers(); break; }
+
 
 		case 'q': case 'Q': {
 			cout << "\nBYE BYE :)" << endl;
@@ -84,8 +88,10 @@ void ShowMenu() {
 		<< "6: Random Character Genertor and Timer" << endl
 		<< "7: Check Custom Sentence Lenght and Type" << endl
 		<< "8: Checkers Game" << endl
+		<< "9: Random Numbers" << endl
 
-		<< "Q: Quit" << endl;
+
+		<< "\nQ: Quit" << endl;
 }
 
 //Input asked info and outputs given info
@@ -288,14 +294,14 @@ void SentenceRangeFor()
 
 	string sentence;
 	int clauses = 0;
-	cout << "\nType a sentence in English: ";	
+	cout << "\nType a sentence in English: ";
 	//we used cin >> before getline() and that causes problems
 	//cin >> leaves a endl or \n "into the void" and then getline() reads it as an finished input so it getline returns blank.
 
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
 	getline(cin, sentence);
-	
+
 
 	//making a lists of conjuctions and punctuation to check from in the sentence
 	vector<string> conjuctions //https://www.englishclub.com/vocabulary/common-conjunctions-25.php
@@ -305,8 +311,8 @@ void SentenceRangeFor()
 		"although","nor","like","once","unless","now","except"
 	};
 	//list of punctuation marks for sentences
-	vector<char> punctuations{'.',',',':',';','!','?'};
-	
+	vector<char> punctuations{ '.',',',':',';','!','?' };
+
 
 	//now we want to search and find these in the sentence
 	//we use range based for loops (for-each) for this because it goes through the whole list and executes the code through every item/iteration/conjunction of that list
@@ -333,21 +339,21 @@ void SentenceRangeFor()
 
 	//amount of character in the string
 	int charAmount = sentence.size();
-	cout << "\nThe amount of characters in the sentence: " << charAmount <<'.'<< endl;
+	cout << "\nThe amount of characters in the sentence: " << charAmount << '.' << endl;
 
 	//so if the amount of clauses is more than 1 then it is a compound/complex sentence otherwise it is a simple sentence
 	if (clauses > 1)
 		cout << "The sentence is a compound/complex and has " << clauses << " amount of clauses." << endl;
 	else
 		cout << "The sentence is a simple sentence." << endl;
-	
+
 	cout << "\n*** PART 7 END***" << endl;
 }
 
 //creating functions for a checkers game
 
 //making the array for the board
-void InitializeBoard(vector<vector<char>> &board)
+void InitializeBoard(vector<vector<char>>& board)
 {
 	//const int for the 9x9 board with A-H and 1-8 indicators
 	const int size = 9;
@@ -390,7 +396,7 @@ void InitializeBoard(vector<vector<char>> &board)
 }
 
 //printing the board but not modifying it
-void PrintBoard(const vector<vector<char>> &board)
+void PrintBoard(const vector<vector<char>>& board)
 {
 	cout << endl;
 	//from each row in the board
@@ -406,7 +412,7 @@ void PrintBoard(const vector<vector<char>> &board)
 }
 //correct lowercase inputs and convert input to int for vectors indices.
 //making bool so that we can validate input.
-bool ValidateInput(string &input, int &col, int &row)
+bool ValidateInput(string& input, int& col, int& row)
 {
 	//if the input is not 2 then the input is invalid immediately without string to char conversion
 	if (input.length() != 2)
@@ -430,13 +436,13 @@ bool ValidateInput(string &input, int &col, int &row)
 //Validating movement and movement logic and allow quitting
 void movePiece(vector<vector<char>>& board, char player)
 {
-	
+
 
 	string from, to;
 	//ask for move input
 	cout << "\nTo Quit input QQ in both input fields" << endl
 		<< "\nPlayer: " << player
-		<< ", make your move (e.g. from \"B6\" to \"C5\"): " << endl 
+		<< ", make your move (e.g. from \"B6\" to \"C5\"): " << endl
 		<< "From: "; cin >> from; cout << "to: "; cin >> to;
 
 
@@ -446,7 +452,7 @@ void movePiece(vector<vector<char>>& board, char player)
 		quit = true;
 		return;
 	}
-		
+
 
 
 	if (to == "QQ" || to == "qq")
@@ -454,13 +460,13 @@ void movePiece(vector<vector<char>>& board, char player)
 		quit = true;
 		return;
 	}
-		
 
-	//making integers for ValidateInput arguments
+
+	//making integers for ValidateInput() arguments
 	int fromCol, fromRow, toCol, toRow;
 
-	//Invalid input either from to are invalid
-	if (!ValidateInput(from, fromCol, fromRow)||!ValidateInput(to,toCol,toRow))
+	//Invalid input given to either "from" field or "to" field
+	if (!ValidateInput(from, fromCol, fromRow) || !ValidateInput(to, toCol, toRow))
 	{
 		cout << "\nInvalid input :( Try again." << endl;
 		retry = true;
@@ -478,18 +484,19 @@ void movePiece(vector<vector<char>>& board, char player)
 	//validate the space to be empty before moving
 	if (board[toRow][toCol] != ' ')
 	{
-		cout << "OCCUPIEEED!!! \n Try again." << endl;
+		cout << "OCCUPIED!!! \n Try again." << endl;
 		retry = true;
 		return;
 	}
-	
-		
-	
+
+
+
 	//move the piece and empty the start position
 	board[toRow][toCol] = player;
 	board[fromRow][fromCol] = ' ';
-	
-		
+	//reset the retry to false so that the player switches when a valid input is given
+	retry = false;
+
 }
 //function that runs the game and well it doesn't follow any rules or have a win condition (yet) but the changing of the pieces works and is validated for incorrect inputs.
 void CheckersGame()
@@ -498,23 +505,23 @@ void CheckersGame()
 
 	//reset global quit bool to false when starting a new game to not immediately quit a new game
 	quit = false;
-	//mkaing a bool for the do while loop
+	//a bool to keep the game running in a do while loop
 	bool quitGame = false;
 
 
-	//initialize 2D vector and board
+	//initialize/make 2D vector array and board
 	vector<vector<char>> board;
 	InitializeBoard(board);
-	
-	
+
+
 	//start with O's aka bottom player
 	char currentPlayer = 'O';
-		
-	
+
+
 	//do while loop to continue the game until it is exited manually
-	do 
+	do
 	{
-		
+
 		PrintBoard(board);
 		movePiece(board, currentPlayer);
 
@@ -531,7 +538,105 @@ void CheckersGame()
 			//change the player after each turn but even if invalid
 			currentPlayer = (currentPlayer == 'O') ? 'X' : 'O';
 		}
-	} while (!quitGame);		
+	} while (!quitGame);
 
 	cout << "\n*** PART 8 END***" << endl;
+}
+
+//section9 function where we put 40 random numbers in the range of -10/10 into an array
+void GenerateNumsIntoArray(vector<int>& numArray)
+{
+	srand(time(NULL));
+	cout << "\nRandom numbers: ";
+	//for loop to input numbers
+	for (int i = 0; i < 40; i++)
+	{
+		//random numbers in between the range of -10/10
+		int randNum = rand() % 21 - 10;
+		numArray.insert(numArray.begin() + i, randNum);
+
+	}
+	for (int num : numArray)
+	{
+		cout << num << " ";
+	}
+	cout << endl;
+}
+//Different functions to check through the array for odds/evens/positives/negatives and zeros
+void Odds(vector<int>& numArray)
+{
+	int oddCount = 0;
+	for (int num : numArray)
+	{
+		if (num % 2 != 0)
+		{
+			oddCount++;
+		}
+	}
+	cout << "Odd numbers: " << oddCount << endl;
+}
+void Evens(vector<int>& numArray)
+{
+	int evenCount = 0;
+
+	for (int num : numArray)
+	{
+		if (num % 2 == 0 && num != 0)
+		{
+			evenCount++;
+
+		}
+	}
+	cout << "Even numbers: " << evenCount << endl;
+}
+void Plus(vector<int>& numArray)
+{
+	int plusCount = 0;
+	for (int num : numArray)
+	{
+		if (num > 0)
+		{
+			plusCount++;
+		}
+	}
+	cout << "Positive numbers: " << plusCount << endl;
+}
+void Minus(vector<int>& numArray)
+{
+	int plusCount = 0;
+
+	for (int num : numArray)
+	{
+		if (num < 0)
+		{
+			plusCount++;
+		}
+	}
+	cout << "Negative numbers: " << plusCount << endl;
+}
+void Zeros(vector<int>& numArray)
+{
+	int zeroCount = 0;
+	for (int num : numArray)
+	{
+		if (num == 0)
+		{
+			zeroCount++;
+		}
+	}
+	cout << "Zeros: " << zeroCount << endl;
+}
+//the executable function
+void RandomNumbers()
+{
+	cout << "\n*** PART 9***" << endl;
+	//the array
+	vector<int> numArray;
+	GenerateNumsIntoArray(numArray);
+	Odds(numArray);
+	Evens(numArray);
+	Plus(numArray);
+	Minus(numArray);
+	Zeros(numArray);
+	cout << "\n*** PART 9 END***" << endl;
 }
