@@ -2,7 +2,6 @@
 
 //include iostream sourcecode(ex. cout and cin -functions)
 #include <iostream>
-
 #include <string>
 #include <iomanip> //for output formatting
 #include <stdlib.h>
@@ -10,6 +9,7 @@
 #include <chrono>
 #include <vector>
 #include <limits>
+#include <fstream>
 
 
 using namespace std;
@@ -22,6 +22,7 @@ bool retry = false;
 
 //In C++ -programs functions have to be declared before it is used (called)
 //functions can be also defined here but not all functions are called so it is "cleaner" to declare (a prototype of ) the functions actually used
+void Section10();
 void ShowMenu();
 void PersonalID();
 void AnnualGrant();
@@ -39,12 +40,12 @@ int main()
 {
 	//char type variable are written inside sinlge '' parenthesis and string type are in double ""
 	char choosePart;
-
-	cout << "The program starts:" << endl;
+	Section10();
+	cout << "\nThe program starts:" << endl;
 	cout << "\n-------------------------" << endl;
 	do //do while loop executes once before checking the condition for the loop
 	{
-
+		
 		ShowMenu();
 
 		cout << "\nEnter your choice: ";
@@ -78,6 +79,7 @@ int main()
 	cout << "The program has ended and shutdown." << endl;
 }
 
+//prints the main menu
 void ShowMenu() {
 	cout << "\nChoose which Part/Function to execute:" << endl << endl
 		<< "1: Personal ID" << endl
@@ -93,16 +95,30 @@ void ShowMenu() {
 
 		<< "\nQ: Quit" << endl;
 }
-
+void Section10() 
+{
+	fstream file("user.dat", ios::in);
+		if (file.is_open())
+		{
+			string name;
+			getline(file, name);
+			cout << "Welcome back, " << name << "!" << endl;
+			file.close();
+		}
+		else
+		{
+			cout << "No user data found. Please enter your information." << endl;
+		}
+}
 //Input asked info and outputs given info
 void PersonalID()
 {
 
 	string name;
-	int age;
-	int studentNum;
-	float height;
-	float weight;
+	string age;
+	string studentNum;
+	string height;
+	string weight;
 
 
 
@@ -115,6 +131,21 @@ void PersonalID()
 
 	cout << "\nGiven info:\nName: " << name << "\nAge: " << age << "\nStudent ID: " << studentNum << "\nHeight: " << height << "\nWeight: " << weight << endl;
 	cout << "\n*** PART 1 END***" << endl;
+
+	//create and write the user info to file
+	//using fstream and specifying the mode ensures the correct behavior 
+	//ios::out makes it so it's for creating and writing in the file 
+	//ios::trunc is to delete previous data and start of on a clean slate if the file exists already
+	fstream file("user.dat", ios::out | ios::trunc);	
+	if (file.is_open())
+	{
+		file << name << endl << age << endl << studentNum << endl << height << endl << weight;
+		file.close();
+	}
+	else
+	{
+		cout << "File could not be opened for writing." << endl;
+	}
 }
 
 //input grant months per year and amount and outputs annual grant amount
